@@ -10,7 +10,9 @@ import NextButton from "./NextButton";
 import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
 import Footer from "./Footer";
-import Timer from "../Timer";
+import Timer from "./Timer";
+
+const SECONDS_PER_QUESTIONS = 30;
 
 const initialState = {
   questions: [],
@@ -19,7 +21,7 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
-  secondsRemaining: 5,
+  secondsRemaining: null,
 };
 //status can be:  loading,error,ready,active,finished
 
@@ -30,7 +32,8 @@ function reducer(state, action) {
     case "dataFailed":
       return { ...state, status: "error" };
     case "start":
-      return { ...state, status: "active" };
+      return { ...state, status: "active", secondsRemaining: 
+      state.questions.length* SECONDS_PER_QUESTIONS };
     case "newAnswer":
       const question = state.questions.at(state.index);
       return {
@@ -58,10 +61,11 @@ function reducer(state, action) {
         answer: null,
         points: 0,
         highscore: 0,
+        secondsRemaining: null,
       };
       case "tick" :
         return {...state,secondsRemaining: state.secondsRemaining-1, 
-        status: state.secondsRemaining===0 ? "finished" : state.status,}
+        status: state.secondsRemaining===0 ? "finished" : state.status}
     default:
       throw new Error("Action unknown");
   }
